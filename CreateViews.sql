@@ -27,7 +27,8 @@ SELECT
   ROUND(SUM(p.pizza_CustPrice - p.pizza_BusPrice), 2) AS Profit,
   DATE_FORMAT(p.pizza_PizzaDate, '%c/%Y') AS OrderMonth
 FROM pizza p
-GROUP BY DATE_FORMAT(p.pizza_PizzaDate, '%Y-%m'), p.pizza_Size, p.pizza_CrustType;
+GROUP BY DATE_FORMAT(p.pizza_PizzaDate, '%Y-%m'), p.pizza_Size, p.pizza_CrustType
+ORDER BY Profit ASC;
 
 -- VIEW 3: ProfitByOrderType
 DROP VIEW IF EXISTS ProfitByOrderType;
