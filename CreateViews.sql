@@ -8,11 +8,10 @@ DROP VIEW IF EXISTS ToppingPopularity;
 CREATE VIEW ToppingPopularity AS
 SELECT
   t.topping_TopName AS Topping,
-  SUM(CASE WHEN pt.pizza_topping_IsDouble = 1 THEN 2 ELSE 1 END) AS ToppingCount
-FROM pizza_topping pt
-JOIN topping t ON t.topping_TopID = pt.topping_TopID
-GROUP BY t.topping_TopName
-ORDER BY ToppingCount DESC, Topping ASC;
+  COALESCE(SUM(CASE WHEN pt.pizza_topping_IsDouble = 1 THEN 2 ELSE 1 END), 0) AS ToppingCount
+FROM topping t
+LEFT JOIN pizza_topping pt ON pt.topping_TopID = t.topping_TopID
+GROUP BY t.topping_TopName;
 
 -- VIEW 2: ProfitByPizza
 DROP VIEW IF EXISTS ProfitByPizza;
@@ -23,18 +22,16 @@ SELECT
   p.pizza_CrustType AS `Crust`,
   ROUND(SUM(p.pizza_CustPrice - p.pizza_BusPrice), 2) AS Profit
 FROM pizza p
-GROUP BY DATE_FORMAT(p.pizza_PizzaDate, '%Y-%m'), p.pizza_Size, p.pizza_CrustType
-ORDER BY Profit DESC;
+GROUP BY DATE_FORMAT(p.pizza_PizzaDate, '%Y-%m'), p.pizza_Size, p.pizza_CrustType;
 
 -- VIEW 3: ProfitByOrderType
 DROP VIEW IF EXISTS ProfitByOrderType;
 CREATE VIEW ProfitByOrderType AS
 SELECT
-  o.ordertable_OrderType AS `CustomerType`,
+  o.ordertable_OrderType AS `OrderType`,
   DATE_FORMAT(o.ordertable_OrderDateTime, '%Y-%m') AS `OrderMonth`,
   ROUND(SUM(o.ordertable_CustPrice - o.ordertable_BusPrice), 2) AS `Profit`,
   ROUND(SUM(o.ordertable_BusPrice), 2) AS `TotalOrderCost`,
   ROUND(SUM(o.ordertable_CustPrice), 2) AS `TotalOrderPrice`
 FROM ordertable o
-GROUP BY o.ordertable_OrderType, DATE_FORMAT(o.ordertable_OrderDateTime, '%Y-%m')
-ORDER BY Profit DESC;
+GROUP BY o.ordertable_OrderType, DATE_FORMAT(o.ordertable_OrderDateTime, '%Y-%m');
