@@ -1,3 +1,4 @@
+-- Created by Benjamin McDonnough
 CREATE DATABASE PizzaDB;
 USE PizzaDB;
 
