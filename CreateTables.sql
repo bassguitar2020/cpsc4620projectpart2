@@ -5,8 +5,8 @@ USE PizzaDB;
 CREATE TABLE baseprice (
     baseprice_Size VARCHAR(30),
     baseprice_CrustType VARCHAR(30),
-    baseprice_CustPrice DECIMAL(5,2),
-    baseprice_BusPrice DECIMAL(5,2),
+    baseprice_CustPrice DECIMAL(5,2) NOT NULL,
+    baseprice_BusPrice DECIMAL(5,2) NOT NULL,
     PRIMARY KEY (baseprice_Size, baseprice_CrustType)
 );
 
