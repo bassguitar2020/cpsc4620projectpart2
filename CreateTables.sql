@@ -107,26 +107,3 @@ CREATE TABLE dinein (
     dinein_TableNum INT NOT NULL,
     FOREIGN KEY (ordertable_OrderID) REFERENCES ordertable(ordertable_OrderID)
 );
-
-DELIMITER //
-CREATE TRIGGER UpdateOrderPrice_AfterPizzaInsert
-AFTER INSERT ON pizza
-FOR EACH ROW
-BEGIN
-    UPDATE ordertable
-    SET ordertable_CustPrice = IFNULL(ordertable_CustPrice, 0) + NEW.pizza_CustPrice,
-        ordertable_BusPrice = IFNULL(ordertable_BusPrice, 0) + NEW.pizza_BusPrice
-    WHERE ordertable_OrderID = NEW.ordertable_OrderID;
-END //
-DELIMITER ;
-
-DELIMITER //
-CREATE TRIGGER ReduceToppingInventory_AfterInsert
-AFTER INSERT ON pizza_topping
-FOR EACH ROW
-BEGIN
-    UPDATE topping
-    SET topping_CurINVT = topping_CurINVT - 1
-    WHERE topping_TopID = NEW.topping_TopID;
-END //
-DELIMITER ;

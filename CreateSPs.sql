@@ -127,13 +127,3 @@ BEGIN
 END //
 DELIMITER ;
 
-DELIMITER //
-CREATE TRIGGER ReduceToppingInventory_AfterInsert
-AFTER INSERT ON pizza_topping
-FOR EACH ROW
-BEGIN
-    UPDATE topping
-    SET topping_CurInv = topping_CurInv - 1
-    WHERE topping_TopID = NEW.topping_TopID;
-END //
-DELIMITER ;
