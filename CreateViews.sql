@@ -1,5 +1,9 @@
 USE PizzaDB;
 
+-- CreateViews.sql
+-- Author: Kolby Turner
+
+
 -- VIEW 1: ToppingPopularity
 DROP VIEW IF EXISTS ToppingPopularity;
 CREATE VIEW ToppingPopularity AS
@@ -10,7 +14,6 @@ FROM pizza_topping pt
 JOIN topping t ON t.topping_TopID = pt.topping_TopID
 GROUP BY t.topping_TopName
 ORDER BY ToppingCount DESC, Topping ASC;
-
 
 -- VIEW 2: ProfitByPizza
 DROP VIEW IF EXISTS ProfitByPizza;
@@ -23,7 +26,6 @@ SELECT
 FROM pizza p
 GROUP BY DATE_FORMAT(p.pizza_PizzaDate, '%Y-%m'), p.pizza_Size, p.pizza_Crust
 ORDER BY Profit DESC;
-
 
 -- VIEW 3: ProfitByOrderType
 DROP VIEW IF EXISTS ProfitByOrderType;
