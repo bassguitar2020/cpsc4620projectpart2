@@ -358,23 +358,21 @@ INSERT INTO delivery (ordertable_OrderID, delivery_HouseNum, delivery_Street, de
 INSERT INTO pizza (pizza_Size, pizza_CrustType, ordertable_OrderID, pizza_PizzaDate, pizza_CustPrice, pizza_BusPrice)
 VALUES ('Large','Thin', @o7, CONCAT(YEAR(CURDATE()),'-02-13 20:32:00'), 18.00, 2.75);
 
-INSERT INTO pizza_topping (pizza_PizzaID, topping_TopID, pizza_topping_IsDouble)
-SELECT p.pizza_PizzaID, @topFourCheese, 1
+INSERT INTO TempPizzaToppings (pizza_PizzaID, topping_TopID, pizza_topping_IsDouble)
+SELECT p.pizza_PizzaID, t.topping_TopID, 1
 FROM pizza p
+JOIN topping t ON t.topping_TopName='Four Cheese Blend'
 WHERE p.ordertable_OrderID=@o7 AND p.pizza_CustPrice=18.00;
 
 -- Pizza B
 INSERT INTO pizza (pizza_Size, pizza_CrustType, ordertable_OrderID, pizza_PizzaDate, pizza_CustPrice, pizza_BusPrice)
 VALUES ('Large','Thin', @o7, CONCAT(YEAR(CURDATE()),'-02-13 20:32:00'), 19.25, 3.25);
 
-INSERT INTO pizza_topping (pizza_PizzaID, topping_TopID, pizza_topping_IsDouble)
-SELECT p.pizza_PizzaID, @topRegularCheese, 0
+INSERT INTO TempPizzaToppings (pizza_PizzaID, topping_TopID, pizza_topping_IsDouble)
+SELECT p.pizza_PizzaID, t.topping_TopID,
+       CASE WHEN t.topping_TopName='Pepperoni' THEN 1 ELSE 0 END
 FROM pizza p
-WHERE p.ordertable_OrderID=@o7 AND p.pizza_CustPrice=19.25;
-
-INSERT INTO pizza_topping (pizza_PizzaID, topping_TopID, pizza_topping_IsDouble)
-SELECT p.pizza_PizzaID, @topPepperoni, 1
-FROM pizza p
+JOIN topping t ON t.topping_TopName IN ('Regular Cheese','Pepperoni')
 WHERE p.ordertable_OrderID=@o7 AND p.pizza_CustPrice=19.25;
 
 -- Order-level % discount (Employee 15%)
@@ -395,3 +393,10 @@ SET o.ordertable_CustPrice = ROUND((
       WHERE od.ordertable_OrderID=o.ordertable_OrderID AND d.discount_IsPercent=1
     ),0)), 2)
 WHERE o.ordertable_OrderID=@o7;
+
+-- Flush staged toppings into production table after all rows have been built
+INSERT INTO pizza_topping (pizza_PizzaID, topping_TopID, pizza_topping_IsDouble)
+SELECT pizza_PizzaID, topping_TopID, pizza_topping_IsDouble
+FROM TempPizzaToppings;
+
+DROP TEMPORARY TABLE TempPizzaToppings;
