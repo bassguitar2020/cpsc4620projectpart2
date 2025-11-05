@@ -33,6 +33,7 @@ CREATE TABLE pizza (
     pizza_Size VARCHAR(30),
     pizza_CrustType VARCHAR(30),
     ordertable_OrderID INT,
+    pizza_PizzaState VARCHAR(30),
     pizza_PizzaDate DATETIME,
     pizza_CustPrice DECIMAL(5,2),
     pizza_BusPrice DECIMAL(5,2),

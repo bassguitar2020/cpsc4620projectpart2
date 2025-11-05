@@ -59,7 +59,7 @@ INSERT INTO customer (customer_FName, customer_LName, customer_PhoneNum) VALUES
 ('Andrew','Wilkes-Krier','8642545861'),
 ('Matt','Engers','8644749953'),
 ('Frank','Turner','8642328944'),
-('Milo','Auckerman','864878 5679');
+('Milo','Auckerman','8648785679');
 
 --ORDERS
 
@@ -72,8 +72,8 @@ SET @o1 := LAST_INSERT_ID();
 INSERT INTO dinein (ordertable_OrderID, dinein_TableNum) VALUES
 (@o1, 21);
 
-INSERT INTO pizza (pizza_Size, pizza_CrustType, ordertable_OrderID, pizza_PizzaDate, pizza_CustPrice, pizza_BusPrice)
-VALUES ('Large','Thin', @o1, CONCAT(YEAR(CURDATE()),'-01-05 12:03:00'), 19.75, 3.68);
+INSERT INTO pizza (pizza_Size, pizza_CrustType, ordertable_OrderID, pizza_PizzaState, pizza_PizzaDate, pizza_CustPrice, pizza_BusPrice)
+VALUES ('Large','Thin', @o1, 'completed', CONCAT(YEAR(CURDATE()),'-01-05 12:03:00'), 19.75, 3.68);
 
 INSERT INTO pizza_topping (pizza_PizzaID, topping_TopID, pizza_topping_IsDouble)
 SELECT p.pizza_PizzaID, t.topping_TopID, 1
@@ -116,8 +116,8 @@ INSERT INTO dinein (ordertable_OrderID, dinein_TableNum) VALUES
 (@o2, 4);
 
 -- A
-INSERT INTO pizza (pizza_Size, pizza_CrustType, ordertable_OrderID, pizza_PizzaDate, pizza_CustPrice, pizza_BusPrice)
-VALUES ('Medium','Pan', @o2, CONCAT(YEAR(CURDATE()),'-02-03 12:05:00'), 12.85, 3.23);
+INSERT INTO pizza (pizza_Size, pizza_CrustType, ordertable_OrderID, pizza_PizzaState, pizza_PizzaDate, pizza_CustPrice, pizza_BusPrice)
+VALUES ('Medium','Pan', @o2, 'completed', CONCAT(YEAR(CURDATE()),'-02-03 12:05:00'), 12.85, 3.23);
 
 INSERT INTO pizza_topping (pizza_PizzaID, topping_TopID, pizza_topping_IsDouble)
 SELECT p.pizza_PizzaID, t.topping_TopID, 0
@@ -132,8 +132,8 @@ WHERE p.ordertable_OrderID=@o2 AND p.pizza_Size='Medium' AND p.pizza_CrustType='
   AND d.discount_DiscountName='Specialty Pizza';
 
 -- B
-INSERT INTO pizza (pizza_Size, pizza_CrustType, ordertable_OrderID, pizza_PizzaDate, pizza_CustPrice, pizza_BusPrice)
-VALUES ('Small','Original', @o2, CONCAT(YEAR(CURDATE()),'-02-03 12:05:00'), 6.93, 1.40);
+INSERT INTO pizza (pizza_Size, pizza_CrustType, ordertable_OrderID, pizza_PizzaState, pizza_PizzaDate, pizza_CustPrice, pizza_BusPrice)
+VALUES ('Small','Original', @o2, 'completed', CONCAT(YEAR(CURDATE()),'-02-03 12:05:00'), 6.93, 1.40);
 
 INSERT INTO pizza_topping (pizza_PizzaID, topping_TopID, pizza_topping_IsDouble)
 SELECT p.pizza_PizzaID, t.topping_TopID, 0
@@ -178,14 +178,14 @@ SET @o3 := LAST_INSERT_ID();
 INSERT INTO pickup (ordertable_OrderID, pickup_IsPickedUp) VALUES
 (@o3, 1);
 
-INSERT INTO pizza (pizza_Size, pizza_CrustType, ordertable_OrderID, pizza_PizzaDate, pizza_CustPrice, pizza_BusPrice)
+INSERT INTO pizza (pizza_Size, pizza_CrustType, ordertable_OrderID, pizza_PizzaState, pizza_PizzaDate, pizza_CustPrice, pizza_BusPrice)
 VALUES 
-('Large','Original', @o3, CONCAT(YEAR(CURDATE()),'-01-03 21:30:00'), 14.88, 3.30),
-('Large','Original', @o3, CONCAT(YEAR(CURDATE()),'-01-03 21:30:00'), 14.88, 3.30),
-('Large','Original', @o3, CONCAT(YEAR(CURDATE()),'-01-03 21:30:00'), 14.88, 3.30),
-('Large','Original', @o3, CONCAT(YEAR(CURDATE()),'-01-03 21:30:00'), 14.88, 3.30),
-('Large','Original', @o3, CONCAT(YEAR(CURDATE()),'-01-03 21:30:00'), 14.88, 3.30),
-('Large','Original', @o3, CONCAT(YEAR(CURDATE()),'-01-03 21:30:00'), 14.88, 3.30);
+('Large','Original', @o3, 'completed', CONCAT(YEAR(CURDATE()),'-01-03 21:30:00'), 14.88, 3.30),
+('Large','Original', @o3, 'completed', CONCAT(YEAR(CURDATE()),'-01-03 21:30:00'), 14.88, 3.30),
+('Large','Original', @o3, 'completed', CONCAT(YEAR(CURDATE()),'-01-03 21:30:00'), 14.88, 3.30),
+('Large','Original', @o3, 'completed', CONCAT(YEAR(CURDATE()),'-01-03 21:30:00'), 14.88, 3.30),
+('Large','Original', @o3, 'completed', CONCAT(YEAR(CURDATE()),'-01-03 21:30:00'), 14.88, 3.30),
+('Large','Original', @o3, 'completed', CONCAT(YEAR(CURDATE()),'-01-03 21:30:00'), 14.88, 3.30);
 
 -- Toppings for all pizzas in order #3
 INSERT INTO pizza_topping (pizza_PizzaID, topping_TopID, pizza_topping_IsDouble)
@@ -227,8 +227,8 @@ INSERT INTO delivery (ordertable_OrderID, delivery_HouseNum, delivery_Street, de
 (@o4, 115, 'Party Blvd', 'Anderson', 'SC', 29621, 1);
 
 -- A
-INSERT INTO pizza (pizza_Size, pizza_CrustType, ordertable_OrderID, pizza_PizzaDate, pizza_CustPrice, pizza_BusPrice)
-VALUES ('XLarge','Original', @o4, CONCAT(YEAR(CURDATE()),'-02-20 19:11:00'), 27.94, 5.59);
+INSERT INTO pizza (pizza_Size, pizza_CrustType, ordertable_OrderID, pizza_PizzaState, pizza_PizzaDate, pizza_CustPrice, pizza_BusPrice)
+VALUES ('XLarge','Original', @o4, 'completed', CONCAT(YEAR(CURDATE()),'-02-20 19:11:00'), 27.94, 5.59);
 
 INSERT INTO pizza_topping (pizza_PizzaID, topping_TopID, pizza_topping_IsDouble)
 SELECT p.pizza_PizzaID, t.topping_TopID, 0
@@ -236,8 +236,8 @@ FROM pizza p JOIN topping t ON t.topping_TopName IN ('Four Cheese Blend','Pepper
 WHERE p.ordertable_OrderID=@o4 AND p.pizza_CustPrice=27.94;
 
 -- B
-INSERT INTO pizza (pizza_Size, pizza_CrustType, ordertable_OrderID, pizza_PizzaDate, pizza_CustPrice, pizza_BusPrice)
-VALUES ('XLarge','Original', @o4, CONCAT(YEAR(CURDATE()),'-02-20 19:11:00'), 31.50, 6.25);
+INSERT INTO pizza (pizza_Size, pizza_CrustType, ordertable_OrderID, pizza_PizzaState, pizza_PizzaDate, pizza_CustPrice, pizza_BusPrice)
+VALUES ('XLarge','Original', @o4, 'completed', CONCAT(YEAR(CURDATE()),'-02-20 19:11:00'), 31.50, 6.25);
 
 INSERT INTO pizza_topping (pizza_PizzaID, topping_TopID, pizza_topping_IsDouble)
 SELECT p.pizza_PizzaID, t.topping_TopID,
@@ -252,8 +252,8 @@ WHERE p.ordertable_OrderID=@o4 AND p.pizza_CustPrice=31.50
   AND d.discount_DiscountName='Specialty Pizza';
 
 -- C
-INSERT INTO pizza (pizza_Size, pizza_CrustType, ordertable_OrderID, pizza_PizzaDate, pizza_CustPrice, pizza_BusPrice)
-VALUES ('XLarge','Original', @o4, CONCAT(YEAR(CURDATE()),'-02-20 19:11:00'), 26.75, 5.55);
+INSERT INTO pizza (pizza_Size, pizza_CrustType, ordertable_OrderID, pizza_PizzaState, pizza_PizzaDate, pizza_CustPrice, pizza_BusPrice)
+VALUES ('XLarge','Original', @o4, 'completed', CONCAT(YEAR(CURDATE()),'-02-20 19:11:00'), 26.75, 5.55);
 
 INSERT INTO pizza_topping (pizza_PizzaID, topping_TopID, pizza_topping_IsDouble)
 SELECT p.pizza_PizzaID, t.topping_TopID, 0
@@ -296,8 +296,8 @@ SET @o5 := LAST_INSERT_ID();
 INSERT INTO pickup (ordertable_OrderID, pickup_IsPickedUp) VALUES
 (@o5, 1);
 
-INSERT INTO pizza (pizza_Size, pizza_CrustType, ordertable_OrderID, pizza_PizzaDate, pizza_CustPrice, pizza_BusPrice)
-VALUES ('XLarge','Gluten-Free', @o5, CONCAT(YEAR(CURDATE()),'-01-02 17:30:00'), 28.70, 7.84);
+INSERT INTO pizza (pizza_Size, pizza_CrustType, ordertable_OrderID, pizza_PizzaState, pizza_PizzaDate, pizza_CustPrice, pizza_BusPrice)
+VALUES ('XLarge','Gluten-Free', @o5, 'completed', CONCAT(YEAR(CURDATE()),'-01-02 17:30:00'), 28.70, 7.84);
 
 INSERT INTO pizza_topping (pizza_PizzaID, topping_TopID, pizza_topping_IsDouble)
 SELECT p.pizza_PizzaID, t.topping_TopID, 0
@@ -336,8 +336,8 @@ SET @o6 := LAST_INSERT_ID();
 INSERT INTO delivery (ordertable_OrderID, delivery_HouseNum, delivery_Street, delivery_City, delivery_State, delivery_Zip, delivery_IsDelivered) VALUES
 (@o6, 6745, 'Wessex St', 'Anderson', 'SC', 29621, 1);
 
-INSERT INTO pizza (pizza_Size, pizza_CrustType, ordertable_OrderID, pizza_PizzaDate, pizza_CustPrice, pizza_BusPrice)
-VALUES ('Large','Thin', @o6, CONCAT(YEAR(CURDATE()),'-01-02 18:17:00'), 25.81, 3.64);
+INSERT INTO pizza (pizza_Size, pizza_CrustType, ordertable_OrderID, pizza_PizzaState, pizza_PizzaDate, pizza_CustPrice, pizza_BusPrice)
+VALUES ('Large','Thin', @o6, 'completed', CONCAT(YEAR(CURDATE()),'-01-02 18:17:00'), 25.81, 3.64);
 
 INSERT INTO pizza_topping (pizza_PizzaID, topping_TopID, pizza_topping_IsDouble)
 SELECT p.pizza_PizzaID, t.topping_TopID,
@@ -373,8 +373,8 @@ INSERT INTO delivery (ordertable_OrderID, delivery_HouseNum, delivery_Street, de
 (@o7, 8879, 'Suburban Lane', 'Anderson', 'SC', 29621, 1);
 
 -- A
-INSERT INTO pizza (pizza_Size, pizza_CrustType, ordertable_OrderID, pizza_PizzaDate, pizza_CustPrice, pizza_BusPrice)
-VALUES ('Large','Thin', @o7, CONCAT(YEAR(CURDATE()),'-02-13 20:32:00'), 18.00, 2.75);
+INSERT INTO pizza (pizza_Size, pizza_CrustType, ordertable_OrderID, pizza_PizzaState, pizza_PizzaDate, pizza_CustPrice, pizza_BusPrice)
+VALUES ('Large','Thin', @o7, 'completed', CONCAT(YEAR(CURDATE()),'-02-13 20:32:00'), 18.00, 2.75);
 
 INSERT INTO pizza_topping (pizza_PizzaID, topping_TopID, pizza_topping_IsDouble)
 SELECT p.pizza_PizzaID, t.topping_TopID, 1
@@ -382,8 +382,8 @@ FROM pizza p JOIN topping t ON t.topping_TopName='Four Cheese Blend'
 WHERE p.ordertable_OrderID=@o7 AND p.pizza_CustPrice=18.00;
 
 -- B
-INSERT INTO pizza (pizza_Size, pizza_CrustType, ordertable_OrderID, pizza_PizzaDate, pizza_CustPrice, pizza_BusPrice)
-VALUES ('Large','Thin', @o7, CONCAT(YEAR(CURDATE()),'-02-13 20:32:00'), 19.25, 3.25);
+INSERT INTO pizza (pizza_Size, pizza_CrustType, ordertable_OrderID, pizza_PizzaState, pizza_PizzaDate, pizza_CustPrice, pizza_BusPrice)
+VALUES ('Large','Thin', @o7, 'completed', CONCAT(YEAR(CURDATE()),'-02-13 20:32:00'), 19.25, 3.25);
 
 INSERT INTO pizza_topping (pizza_PizzaID, topping_TopID, pizza_topping_IsDouble)
 SELECT p.pizza_PizzaID, t.topping_TopID,
