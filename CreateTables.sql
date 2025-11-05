@@ -16,7 +16,7 @@ CREATE TABLE customer (
     customer_CustID INT AUTO_INCREMENT PRIMARY KEY,
     customer_FName VARCHAR(30),
     customer_LName VARCHAR(30),
-    customer_PhoneNum VARCHAR(30),
+    customer_PhoneNum VARCHAR(30)
 );
 
 
@@ -28,7 +28,7 @@ CREATE TABLE ordertable (
     ordertable_CustPrice DECIMAL(5,2),
     ordertable_BusPrice DECIMAL(5,2),
     ordertable_isComplete BOOLEAN,
-    FOREIGN KEY (customer_CustID) REFERENCES Customer(customer_CustID)
+    FOREIGN KEY (customer_CustID) REFERENCES customer(customer_CustID)
 );
 
 
