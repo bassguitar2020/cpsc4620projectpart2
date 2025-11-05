@@ -18,10 +18,11 @@ DELIMITER //
 CREATE PROCEDURE CreateOrder (
     IN custID INT,
     IN orderType VARCHAR(30)
+    IN orderDateTime DATETIME
 )
 BEGIN
     INSERT INTO ordertable (customer_CustID, ordertable_OrderType, ordertable_OrderDateTime, ordertable_isComplete)
-    VALUES (custID, orderType, NOW(), FALSE);
+    VALUES (custID, orderType, orderDateTime, FALSE);
 END //
 DELIMITER ;
 
