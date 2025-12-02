@@ -75,7 +75,7 @@ CREATE PROCEDURE AddPizza (
     IN busPrice DECIMAL(6,2)
 )
 BEGIN
-    INSERT INTO pizza (pizza_OrderID, pizza_Size, pizza_Crust, pizza_PizzaDate, pizza_CustPrice, pizza_BusPrice)
+    INSERT INTO pizza (ordertable_OrderID, pizza_Size, pizza_CrustType, pizza_PizzaDate, pizza_CustPrice, pizza_BusPrice)
     VALUES (orderID, size, crust, pizzaDate, custPrice, busPrice);
     SELECT LAST_INSERT_ID() AS NewPizzaID;
 END //
@@ -123,7 +123,7 @@ BEGIN
     UPDATE ordertable
     SET ordertable_CustPrice = IFNULL(ordertable_CustPrice, 0) + NEW.pizza_CustPrice,
         ordertable_BusPrice = IFNULL(ordertable_BusPrice, 0) + NEW.pizza_BusPrice
-    WHERE ordertable_OrderID = NEW.pizza_OrderID;
+    WHERE ordertable_OrderID = NEW.ordertable_OrderID;
 END //
 DELIMITER ;
 

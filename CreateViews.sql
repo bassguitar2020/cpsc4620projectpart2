@@ -1,7 +1,7 @@
 USE PizzaDB;
 
 -- CreateViews.sql
--- Author: Kolby Turner
+-- Author: Kolby Turner and Benjamin McDonnough
 
 -- VIEW 1: ToppingPopularity
 DROP VIEW IF EXISTS ToppingPopularity;
@@ -35,25 +35,51 @@ ORDER BY Profit ASC;
 -- VIEW 3: ProfitByOrderType
 DROP VIEW IF EXISTS ProfitByOrderType;
 CREATE VIEW ProfitByOrderType AS
-SELECT
-    CASE WHEN GROUPING(order_type) = 1 THEN ''
-         ELSE order_type
-    END AS CustomerType,
-    CASE WHEN GROUPING(order_month_key) = 1 THEN 'Grand Total'
-         ELSE order_month_label
-    END AS OrderMonth,
-    ROUND(SUM(total_cust_price), 2) AS TotalOrderPrice,
-    ROUND(SUM(total_bus_price), 2) AS TotalOrderCost,
-    ROUND(SUM(total_cust_price - total_bus_price), 2) AS Profit
-FROM (
-    SELECT
-        LOWER(ordertable_OrderType) AS order_type,
-        DATE_FORMAT(ordertable_OrderDateTime, '%Y-%m') AS order_month_key,
-        DATE_FORMAT(ordertable_OrderDateTime, '%c/%Y') AS order_month_label,
-        ordertable_CustPrice AS total_cust_price,
-        ordertable_BusPrice AS total_bus_price
-    FROM ordertable
-) grouped_orders
-GROUP BY order_type, order_month_key
-WITH ROLLUP
-HAVING NOT (GROUPING(order_month_key) = 1 AND GROUPING(order_type) = 0);
+WITH order_totals AS (
+  SELECT 
+    o.ordertable_OrderID AS OrderID,
+    LOWER(o.ordertable_OrderType) AS CustomerType,
+    DATE_FORMAT(o.ordertable_OrderDateTime, '%c/%Y') AS OrderMonth,
+    -- Sum of pizza prices and costs per order
+    (SELECT COALESCE(SUM(p.pizza_CustPrice),0)
+       FROM pizza p
+      WHERE p.ordertable_OrderID = o.ordertable_OrderID) AS base_price,
+    (SELECT COALESCE(SUM(p.pizza_BusPrice),0)
+       FROM pizza p
+      WHERE p.ordertable_OrderID = o.ordertable_OrderID) AS base_cost,
+    -- Sum of $ discounts at order level
+    (SELECT COALESCE(SUM(d.discount_Amount),0)
+       FROM order_discount od
+       JOIN discount d ON d.discount_DiscountID = od.discount_DiscountID
+      WHERE od.ordertable_OrderID = o.ordertable_OrderID
+        AND d.discount_IsPercent = 0) AS dollar_off,
+    -- Combined % factor for order-level discounts (multiply sequentially)
+    (SELECT EXP(COALESCE(SUM(LN(1 - (d.discount_Amount/100))),0))
+       FROM order_discount od
+       JOIN discount d ON d.discount_DiscountID = od.discount_DiscountID
+      WHERE od.ordertable_OrderID = o.ordertable_OrderID
+        AND d.discount_IsPercent = 1) AS percent_factor
+  FROM ordertable o
+)
+SELECT 
+  t.CustomerType,
+  t.OrderMonth,
+  CAST(ROUND(SUM( GREATEST( (t.base_price - t.dollar_off) * t.percent_factor, 0) ), 2) AS DECIMAL(10,2)) AS TotalOrderPrice,
+  CAST(ROUND(SUM( t.base_cost ), 2) AS DECIMAL(10,2)) AS TotalOrderCost,
+  CAST(ROUND(SUM( GREATEST( (t.base_price - t.dollar_off) * t.percent_factor, 0) - t.base_cost ), 2) AS DECIMAL(10,2)) AS Profit
+FROM order_totals t
+GROUP BY t.CustomerType, t.OrderMonth
+
+UNION ALL
+
+SELECT 
+  '' AS CustomerType,
+  'Grand Total' AS OrderMonth,
+  CAST(ROUND(SUM( GREATEST( (t.base_price - t.dollar_off) * t.percent_factor, 0) ), 2) AS DECIMAL(10,2)) AS TotalOrderPrice,
+  CAST(ROUND(SUM( t.base_cost ), 2) AS DECIMAL(10,2)) AS TotalOrderCost,
+  CAST(ROUND(SUM( GREATEST( (t.base_price - t.dollar_off) * t.percent_factor, 0) - t.base_cost ), 2) AS DECIMAL(10,2)) AS Profit
+FROM order_totals t
+
+ORDER BY 
+  CASE WHEN CustomerType = '' THEN 1 ELSE 0 END,
+  Profit ASC;
