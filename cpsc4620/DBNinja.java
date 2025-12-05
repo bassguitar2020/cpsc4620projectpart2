@@ -60,7 +60,9 @@ public final class DBNinja {
 	{
 
 		try {
-			conn = DBConnector.make_connection();
+			if (conn == null || conn.isClosed()) {
+				conn = DBConnector.make_connection();
+			}
 			return true;
 		} catch (SQLException e) {
 			return false;
@@ -85,7 +87,7 @@ public final class DBNinja {
 		 * so the cusomter id coming from the Order object will be -1.
 		 * 
 		 */
-		connect_to_db();
+		boolean openedHere = ensureConnection();
 
 		try {
 			conn.setAutoCommit(false);
@@ -136,7 +138,9 @@ public final class DBNinja {
 			conn.rollback();
 			throw e;
 		} finally {
-			closeConn();
+			if (openedHere) {
+				closeConn();
+			}
 		}
 	}
 	
@@ -153,7 +157,7 @@ public final class DBNinja {
 		 * This method returns the id of the pizza just added.
 		 * 
 		 */
-		connect_to_db();
+		boolean openedHere = ensureConnection();
 		int pizzaId;
 
 		try {
@@ -164,7 +168,9 @@ public final class DBNinja {
 			conn.rollback();
 			throw e;
 		} finally {
-			closeConn();
+			if (openedHere) {
+				closeConn();
+			}
 		}
 
 		return pizzaId;
@@ -176,7 +182,7 @@ public final class DBNinja {
 		 * This method adds a new customer to the database.
 		 * 
 		 */
-		connect_to_db();
+		boolean openedHere = ensureConnection();
 		int custId = -1;
 
 		try {
@@ -192,7 +198,9 @@ public final class DBNinja {
 			}
 			ps.close();
 		} finally {
-			closeConn();
+			if (openedHere) {
+				closeConn();
+			}
 		}
 
 		 return custId;
@@ -210,7 +218,7 @@ public final class DBNinja {
 		 * FOR newState = PICKEDUP: mark the pickup status
 		 * 
 		 */
-		connect_to_db();
+		boolean openedHere = ensureConnection();
 
 		try {
 			switch (newState) {
@@ -239,7 +247,9 @@ public final class DBNinja {
 					break;
 			}
 		} finally {
-			closeConn();
+			if (openedHere) {
+				closeConn();
+			}
 		}
 
 	}
@@ -262,7 +272,7 @@ public final class DBNinja {
 	 * Don't forget to order the data according to their order sequence, ie, order 1, order 2, etc.
 	 *
 	 */
-		connect_to_db();
+		boolean openedHere = ensureConnection();
 		ArrayList<Order> orders = new ArrayList<Order>();
 
 		try {
@@ -284,7 +294,9 @@ public final class DBNinja {
 			rs.close();
 			ps.close();
 		} finally {
-			closeConn();
+			if (openedHere) {
+				closeConn();
+			}
 		}
 
 		return orders;
@@ -297,7 +309,7 @@ public final class DBNinja {
 		 * then return an Order object for that order.
 		 * NOTE...there will ALWAYS be a "last order"!
 		 */
-		connect_to_db();
+		boolean openedHere = ensureConnection();
 		Order order = null;
 
 		try {
@@ -310,7 +322,9 @@ public final class DBNinja {
 			rs.close();
 			ps.close();
 		} finally {
-			closeConn();
+			if (openedHere) {
+				closeConn();
+			}
 		}
 
 		 return order;
@@ -323,7 +337,7 @@ public final class DBNinja {
 		 * and return a list of those orders.
 		 *  
 		 */
-		connect_to_db();
+		boolean openedHere = ensureConnection();
 		ArrayList<Order> orders = new ArrayList<Order>();
 
 		try {
@@ -337,7 +351,9 @@ public final class DBNinja {
 			rs.close();
 			ps.close();
 		} finally {
-			closeConn();
+			if (openedHere) {
+				closeConn();
+			}
 		}
 
 		 return orders;
@@ -350,7 +366,7 @@ public final class DBNinja {
 		 * return them in an arrayList of discounts ordered by discount name.
 		 * 
 		*/
-		connect_to_db();
+		boolean openedHere = ensureConnection();
 		ArrayList<Discount> discounts = new ArrayList<Discount>();
 
 		try {
@@ -363,7 +379,9 @@ public final class DBNinja {
 			rs.close();
 			ps.close();
 		} finally {
-			closeConn();
+			if (openedHere) {
+				closeConn();
+			}
 		}
 
 		return discounts;
@@ -377,7 +395,7 @@ public final class DBNinja {
 		 * If it's not found....then return null
 		 *  
 		 */
-		connect_to_db();
+		boolean openedHere = ensureConnection();
 		Discount d = null;
 
 		try {
@@ -391,7 +409,9 @@ public final class DBNinja {
 			rs.close();
 			ps.close();
 		} finally {
-			closeConn();
+			if (openedHere) {
+				closeConn();
+			}
 		}
 
 		 return d;
@@ -405,7 +425,7 @@ public final class DBNinja {
 		 * Don't forget to order the data coming from the database appropriately.
 		 * 
 		*/
-		connect_to_db();
+		boolean openedHere = ensureConnection();
 		ArrayList<Customer> customers = new ArrayList<Customer>();
 
 		try {
@@ -419,7 +439,9 @@ public final class DBNinja {
 			rs.close();
 			ps.close();
 		} finally {
-			closeConn();
+			if (openedHere) {
+				closeConn();
+			}
 		}
 
 		return customers;
@@ -433,7 +455,7 @@ public final class DBNinja {
 		 * If it's not found....then return null
 		 *  
 		 */
-		connect_to_db();
+		boolean openedHere = ensureConnection();
 		Customer c = null;
 
 		try {
@@ -448,7 +470,9 @@ public final class DBNinja {
 			rs.close();
 			ps.close();
 		} finally {
-			closeConn();
+			if (openedHere) {
+				closeConn();
+			}
 		}
 
 		 return c;
@@ -467,7 +491,7 @@ public final class DBNinja {
 		 *
 		 */
 
-		 connect_to_db();
+		 boolean openedHere = ensureConnection();
 
 		/* 
 		 * an example query using a constructed string...
@@ -507,7 +531,9 @@ public final class DBNinja {
 			// process the error or re-raise the exception to a higher level
 		}
 
-		closeConn();
+		if (openedHere) {
+			closeConn();
+		}
 
 		return cname1;
 		// OR
@@ -524,7 +550,7 @@ public final class DBNinja {
 		 * Don't forget to order the data coming from the database appropriately.
 		 * 
 		 */
-		connect_to_db();
+		boolean openedHere = ensureConnection();
 		ArrayList<Topping> tops = new ArrayList<Topping>();
 
 		try {
@@ -537,7 +563,9 @@ public final class DBNinja {
 			rs.close();
 			ps.close();
 		} finally {
-			closeConn();
+			if (openedHere) {
+				closeConn();
+			}
 		}
 
 		return tops;
@@ -551,7 +579,7 @@ public final class DBNinja {
 		 * If it's not found....then return null
 		 *  
 		 */
-		connect_to_db();
+		boolean openedHere = ensureConnection();
 		Topping t = null;
 
 		try {
@@ -565,7 +593,9 @@ public final class DBNinja {
 			rs.close();
 			ps.close();
 		} finally {
-			closeConn();
+			if (openedHere) {
+				closeConn();
+			}
 		}
 
 		 return t;
@@ -577,13 +607,15 @@ public final class DBNinja {
 		 * This method builds an ArrayList of the toppings ON a pizza.
 		 * The list can then be added to the Pizza object elsewhere in the
 		 */
-		connect_to_db();
+		boolean openedHere = ensureConnection();
 		ArrayList<Topping> tops = new ArrayList<Topping>();
 
 		try {
 			tops = fetchPizzaToppings(conn, p.getPizzaID());
 		} finally {
-			closeConn();
+			if (openedHere) {
+				closeConn();
+			}
 		}
 
 		return tops;	
@@ -595,7 +627,7 @@ public final class DBNinja {
 		 * Updates the quantity of the topping in the database by the amount specified.
 		 * 
 		 * */
-		connect_to_db();
+		boolean openedHere = ensureConnection();
 
 		try {
 			String sql = "UPDATE topping SET topping_CurINVT = topping_CurINVT + ? WHERE topping_TopID=?";
@@ -605,7 +637,9 @@ public final class DBNinja {
 			ps.executeUpdate();
 			ps.close();
 		} finally {
-			closeConn();
+			if (openedHere) {
+				closeConn();
+			}
 		}
 	}
 	
@@ -616,13 +650,15 @@ public final class DBNinja {
 		 * Build an ArrayList of all the Pizzas associated with the Order.
 		 * 
 		 */
-		connect_to_db();
+		boolean openedHere = ensureConnection();
 		ArrayList<Pizza> pizzas = new ArrayList<Pizza>();
 
 		try {
 			pizzas = fetchPizzasForOrder(conn, o.getOrderID());
 		} finally {
-			closeConn();
+			if (openedHere) {
+				closeConn();
+			}
 		}
 
 		return pizzas;
@@ -634,13 +670,15 @@ public final class DBNinja {
 		 * Build an array list of all the Discounts associted with the Order.
 		 * 
 		 */
-		connect_to_db();
+		boolean openedHere = ensureConnection();
 		ArrayList<Discount> discounts = new ArrayList<Discount>();
 
 		try {
 			discounts = fetchOrderDiscounts(conn, o.getOrderID());
 		} finally {
-			closeConn();
+			if (openedHere) {
+				closeConn();
+			}
 		}
 
 		return discounts;
@@ -652,13 +690,15 @@ public final class DBNinja {
 		 * Build an array list of all the Discounts associted with the Pizza.
 		 * 
 		 */
-		connect_to_db();
+		boolean openedHere = ensureConnection();
 		ArrayList<Discount> discounts = new ArrayList<Discount>();
 
 		try {
 			discounts = fetchPizzaDiscounts(conn, p.getPizzaID());
 		} finally {
-			closeConn();
+			if (openedHere) {
+				closeConn();
+			}
 		}
 	
 		return discounts;
@@ -670,7 +710,7 @@ public final class DBNinja {
 		 * Query the database fro the base customer price for that size and crust pizza.
 		 * 
 		*/
-		connect_to_db();
+		boolean openedHere = ensureConnection();
 		double price = 0.0;
 
 		try {
@@ -685,7 +725,9 @@ public final class DBNinja {
 			rs.close();
 			ps.close();
 		} finally {
-			closeConn();
+			if (openedHere) {
+				closeConn();
+			}
 		}
 
 		return price;
@@ -697,7 +739,7 @@ public final class DBNinja {
 		 * Query the database fro the base business price for that size and crust pizza.
 		 * 
 		*/
-		connect_to_db();
+		boolean openedHere = ensureConnection();
 		double price = 0.0;
 
 		try {
@@ -712,7 +754,9 @@ public final class DBNinja {
 			rs.close();
 			ps.close();
 		} finally {
-			closeConn();
+			if (openedHere) {
+				closeConn();
+			}
 		}
 
 		return price;
@@ -734,7 +778,7 @@ public final class DBNinja {
 		 * better.
 		 * 
 		 */
-		connect_to_db();
+		boolean openedHere = ensureConnection();
 
 		try {
 			String sql = "SELECT * FROM ToppingPopularity";
@@ -748,7 +792,9 @@ public final class DBNinja {
 			rs.close();
 			ps.close();
 		} finally {
-			closeConn();
+			if (openedHere) {
+				closeConn();
+			}
 		}
 	}
 	
@@ -767,7 +813,7 @@ public final class DBNinja {
 		 * better.
 		 * 
 		 */
-		connect_to_db();
+		boolean openedHere = ensureConnection();
 
 		try {
 			String sql = "SELECT * FROM ProfitByPizza";
@@ -781,7 +827,9 @@ public final class DBNinja {
 			rs.close();
 			ps.close();
 		} finally {
-			closeConn();
+			if (openedHere) {
+				closeConn();
+			}
 		}
 	}
 	
@@ -800,7 +848,7 @@ public final class DBNinja {
 		 * better.
 		 * 
 		 */
-		connect_to_db();
+		boolean openedHere = ensureConnection();
 
 		try {
 			String sql = "SELECT * FROM ProfitByOrderType";
@@ -814,7 +862,9 @@ public final class DBNinja {
 			rs.close();
 			ps.close();
 		} finally {
-			closeConn();
+			if (openedHere) {
+				closeConn();
+			}
 		}
 	}
 	
@@ -871,6 +921,13 @@ public final class DBNinja {
 		if (conn != null && !conn.isClosed()) {
 			conn.close();
 		}
+	}
+
+	private static boolean ensureConnection() throws SQLException, IOException {
+		if (conn == null || conn.isClosed()) {
+			return connect_to_db();
+		}
+		return false;
 	}
 
 	private static int insertPizza(Connection connection, Timestamp d, int orderID, Pizza p) throws SQLException {
