@@ -148,8 +148,6 @@ public class Pizza
 
 	public void addToppings(Topping t, boolean isExtra)
 	{
-		// persist whether this topping was added as "extra" so it can be stored/printed later
-		t.setDoubled(isExtra);
 		Toppings.add(t);
 
 		double unitsNeeded = 0.0;
@@ -159,7 +157,7 @@ public class Pizza
 		} else if (Size.equals(DBNinja.size_m)) {
 			unitsNeeded = t.getMedAMT();
 		} else if (Size.equals(DBNinja.size_l)) {
-			unitsNeeded = t.getLgAMT();
+			unitsNeeded = t.getXLAMT();
 		} else {
 			unitsNeeded = t.getXLAMT();
 		}
