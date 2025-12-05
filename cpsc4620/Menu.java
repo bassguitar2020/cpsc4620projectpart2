@@ -152,11 +152,7 @@ public class Menu {
 					int DiscountID = Integer.parseInt(reader.readLine());
 					while(DiscountID != -1)
 					{
-						Discount temp = findDiscountById(discs, DiscountID);//same deal as above
-						if (temp == null) {
-							System.out.println("Invalid discount selection, returning to menu.");
-							return;
-						}
+						Discount temp = getDiscountBySelection(discs, DiscountID);
 						myDineInOrder.addDiscount(temp);//this not only adds it to the order, but also modifies the two prices as needed.
 //						for(Discount d : discs)
 //						{
@@ -222,11 +218,7 @@ public class Menu {
 					int DiscountID = Integer.parseInt(reader.readLine());
 					while(DiscountID != -1)
 					{
-						Discount temp = findDiscountById(discs, DiscountID);//same deal as above
-						if (temp == null) {
-							System.out.println("Invalid discount selection, returning to menu.");
-							return;
-						}
+						Discount temp = getDiscountBySelection(discs, DiscountID);//same deal as above
 						myPickupOrder.addDiscount(temp);//this not only adds it to the order, but also modifies the two prices as needed.
 //						for(Discount d : discs)
 //						{
@@ -297,11 +289,7 @@ public class Menu {
 					int DiscountID = Integer.parseInt(reader.readLine());
 					while(DiscountID != -1)
 					{
-						Discount temp = findDiscountById(discs, DiscountID);//same deal as above
-						if (temp == null) {
-							System.out.println("Invalid discount selection, returning to menu.");
-							return;
-						}
+						Discount temp = getDiscountBySelection(discs, DiscountID);//same deal as above
 						myDeliveryOrder.addDiscount(temp);//this not only adds it to the order, but also modifies the two prices as needed.
 //						for(Discount d : discs)
 //						{
@@ -617,11 +605,7 @@ public class Menu {
 			int DiscountID = Integer.parseInt(reader.readLine());
 			while(DiscountID != -1)
 			{
-				Discount temp = findDiscountById(discs, DiscountID);//same deal as above
-				if (temp == null) {
-					System.out.println("Invalid discount selection, returning to menu.");
-					return newPizza;
-				}
+				Discount temp = getDiscountBySelection(discs, DiscountID);//same deal as above
 				newPizza.addDiscounts(temp);//this not only adds it to the pizza, but also modifies the two prices as needed.
 //				for(Discount d : discs)
 //				{
@@ -659,13 +643,11 @@ public class Menu {
 		}
 	}
 
-	private static Discount findDiscountById(ArrayList<Discount> discs, int discountID) {
-		for (Discount d : discs)
-		{
-			if (d.getDiscountID() == discountID)
-			{
-				return d;
-			}
+	private static Discount getDiscountBySelection(ArrayList<Discount> discs, int selection) {
+		ArrayList<Discount> sorted = new ArrayList<Discount>(discs);
+		sorted.sort((d1, d2) -> d1.getDiscountName().compareTo(d2.getDiscountName()));
+		if (selection >= 1 && selection <= sorted.size()) {
+			return sorted.get(selection-1);
 		}
 		return null;
 	}
