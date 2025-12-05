@@ -157,7 +157,7 @@ public class Pizza
 		} else if (Size.equals(DBNinja.size_m)) {
 			unitsNeeded = t.getMedAMT();
 		} else if (Size.equals(DBNinja.size_l)) {
-			unitsNeeded = t.getXLAMT();
+			unitsNeeded = t.getLgAMT();
 		} else {
 			unitsNeeded = t.getXLAMT();
 		}

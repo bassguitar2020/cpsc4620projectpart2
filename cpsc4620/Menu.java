@@ -152,7 +152,11 @@ public class Menu {
 					int DiscountID = Integer.parseInt(reader.readLine());
 					while(DiscountID != -1)
 					{
-						Discount temp = discs.get(DiscountID-1);//same deal as above
+						Discount temp = findDiscountById(discs, DiscountID);//same deal as above
+						if (temp == null) {
+							System.out.println("Invalid discount selection, returning to menu.");
+							return;
+						}
 						myDineInOrder.addDiscount(temp);//this not only adds it to the order, but also modifies the two prices as needed.
 //						for(Discount d : discs)
 //						{
@@ -218,7 +222,11 @@ public class Menu {
 					int DiscountID = Integer.parseInt(reader.readLine());
 					while(DiscountID != -1)
 					{
-						Discount temp = discs.get(DiscountID-1);//same deal as above
+						Discount temp = findDiscountById(discs, DiscountID);//same deal as above
+						if (temp == null) {
+							System.out.println("Invalid discount selection, returning to menu.");
+							return;
+						}
 						myPickupOrder.addDiscount(temp);//this not only adds it to the order, but also modifies the two prices as needed.
 //						for(Discount d : discs)
 //						{
@@ -289,7 +297,11 @@ public class Menu {
 					int DiscountID = Integer.parseInt(reader.readLine());
 					while(DiscountID != -1)
 					{
-						Discount temp = discs.get(DiscountID-1);//same deal as above
+						Discount temp = findDiscountById(discs, DiscountID);//same deal as above
+						if (temp == null) {
+							System.out.println("Invalid discount selection, returning to menu.");
+							return;
+						}
 						myDeliveryOrder.addDiscount(temp);//this not only adds it to the order, but also modifies the two prices as needed.
 //						for(Discount d : discs)
 //						{
@@ -364,6 +376,7 @@ public class Menu {
 		switch (ans) {
 			case "a": //all
 				currOrders = DBNinja.getOrders(3);
+				currOrders.sort((o1, o2) -> Integer.compare(o1.getOrderID(), o2.getOrderID()));
 				for (Order o : currOrders) {
 					System.out.println(o);
 				}
@@ -371,6 +384,7 @@ public class Menu {
 				break;
 			case "b": //open
 				currOrders = DBNinja.getOrders(1);
+				currOrders.sort((o1, o2) -> Integer.compare(o1.getOrderID(), o2.getOrderID()));
 				for (Order o : currOrders) {
 					System.out.println(o);
 				}
@@ -378,6 +392,7 @@ public class Menu {
 				break;
 			case "c": //closed
 				currOrders = DBNinja.getOrders(2);
+				currOrders.sort((o1, o2) -> Integer.compare(o1.getOrderID(), o2.getOrderID()));
 				for (Order o : currOrders) {
 					System.out.println(o);
 				}
@@ -602,7 +617,11 @@ public class Menu {
 			int DiscountID = Integer.parseInt(reader.readLine());
 			while(DiscountID != -1)
 			{
-				Discount temp = discs.get(DiscountID-1);//same deal as above
+				Discount temp = findDiscountById(discs, DiscountID);//same deal as above
+				if (temp == null) {
+					System.out.println("Invalid discount selection, returning to menu.");
+					return newPizza;
+				}
 				newPizza.addDiscounts(temp);//this not only adds it to the pizza, but also modifies the two prices as needed.
 //				for(Discount d : discs)
 //				{
@@ -631,11 +650,24 @@ public class Menu {
 	private static void printDiscounts (ArrayList<Discount> discs ){
 		System.out.printf("%-5s%-25s%-20s\n","ID","Discount Name","Amount");
 		System.out.printf("%-5s%-25s%-20s\n","--","------------","-------");
-		for(Discount d : discs)
+		ArrayList<Discount> sorted = new ArrayList<Discount>(discs);
+		sorted.sort((d1, d2) -> d1.getDiscountName().compareTo(d2.getDiscountName()));
+		for(Discount d : sorted)
 		{
 			//System.out.println(t);
 			System.out.printf("%-5s%-25s%-20s\n",d.getDiscountID(), d.getDiscountName(), ((d.isPercent())?"":"$")+d.getAmount()+((d.isPercent())?"%":""));
 		}
+	}
+
+	private static Discount findDiscountById(ArrayList<Discount> discs, int discountID) {
+		for (Discount d : discs)
+		{
+			if (d.getDiscountID() == discountID)
+			{
+				return d;
+			}
+		}
+		return null;
 	}
 
 	public static void PrintReports() throws SQLException, NumberFormatException, IOException

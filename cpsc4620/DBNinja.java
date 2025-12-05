@@ -354,7 +354,7 @@ public final class DBNinja {
 		ArrayList<Discount> discounts = new ArrayList<Discount>();
 
 		try {
-			String sql = "SELECT * FROM discount ORDER BY discount_DiscountID ASC";
+			String sql = "SELECT * FROM discount ORDER BY discount_DiscountName ASC";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
@@ -773,10 +773,10 @@ public final class DBNinja {
 			String sql = "SELECT * FROM ProfitByPizza";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
-			System.out.printf("%-12s%-13s%-8s%-16s%n", "Pizza Size", "Pizza Crust", "Profit", "Last Order Date");
-			System.out.printf("%-12s%-13s%-8s%-16s%n", "----------", "-----------", "------", "---------------");
+			System.out.printf("%-20s%-20s%-20s%-20s%n", "Pizza Size", "Pizza Crust", "Profit", "Last Order Date");
+			System.out.printf("%-20s%-20s%-20s%-20s%n", "----------", "-----------", "------", "---------------");
 			while (rs.next()) {
-				System.out.printf("%-12s%-13s%-8s%-16s%n", rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4));
+				System.out.printf("%-20s%-20s%-20s%-20s%n", rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4));
 			}
 			rs.close();
 			ps.close();
@@ -806,10 +806,10 @@ public final class DBNinja {
 			String sql = "SELECT * FROM ProfitByOrderType";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
-			System.out.printf("%-15s%-13s%-20s%-18s%-8s%n", "Customer Type", "Order Month", "Total Order Price", "Total Order Cost", "Profit");
-			System.out.printf("%-15s%-13s%-20s%-18s%-8s%n", "-------------", "-----------", "-----------------", "----------------", "------");
+			System.out.printf("%-20s%-20s%-20s%-20s%-20s%n", "Customer Type", "Order Month", "Total Order Price", "Total Order Cost", "Profit");
+			System.out.printf("%-20s%-20s%-20s%-20s%-20s%n", "-------------", "-----------", "-----------------", "----------------", "------");
 			while (rs.next()) {
-				System.out.printf("%-15s%-13s%-20s%-18s%-8s%n", rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
+				System.out.printf("%-20s%-20s%-20s%-20s%-20s%n", rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
 			}
 			rs.close();
 			ps.close();
@@ -927,8 +927,14 @@ public final class DBNinja {
 			return;
 		}
 
-		double baseCust = getBaseCustPrice(p.getSize(), p.getCrustType());
-		double baseBus = getBaseBusPrice(p.getSize(), p.getCrustType());
+		double baseCust;
+		double baseBus;
+		try {
+			baseCust = getBaseCustPrice(p.getSize(), p.getCrustType());
+			baseBus = getBaseBusPrice(p.getSize(), p.getCrustType());
+		} catch (IOException e) {
+			throw new SQLException("Failed to retrieve base prices", e);
+		}
 		double expectedCust = baseCust;
 		double expectedBus = baseBus;
 
